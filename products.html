@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Products Dashboard</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Times New Roman', Times, serif;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #614385, #516395, #6b82c3);
+      background-size: 400% 400%;
+      animation: gradient 15s ease infinite;
+      color: #333;
+      min-height: 100vh;
+      padding: 20px;
+      overflow-x: hidden;
+      padding-top: 70px; 
+
+    }
+    
+    @keyframes gradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background-color: rgba(255, 255, 255, 0.9);
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      padding: 25px;
+    }
+    
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid #eee;
+    }
+    
+    h1 {
+      color: #2c3e50;
+      margin-bottom: 10px;
+      font-size: 36px;
+    }
+    
+    .description {
+      color: #7f8c8d;
+      font-size: 16px;
+      line-height: 1.6;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .stats-container {
+      display: flex;
+      justify-content: space-around;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+    
+    .stat-card {
+      background: #fff;
+      border-radius: 10px;
+      padding: 15px;
+      width: 23%;
+      min-width: 200px;
+      margin: 10px 0;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      text-align: center;
+      transition: transform 0.3s;
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-5px);
+    }
+    
+    .stat-icon {
+      font-size: 28px;
+      margin-bottom: 10px;
+      color: #614385;
+    }
+    
+    .stat-value {
+      font-size: 24px;
+      font-weight: bold;
+      color: #2c3e50;
+    }
+    
+    .stat-label {
+      font-size: 14px;
+      color: #7f8c8d;
+    }
+    
+    .form-section {
+      background: #fff;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    h2 {
+      color: #2c3e50;
+      margin-bottom: 15px;
+      font-size: 24px;
+      display: flex;
+      align-items: center;
+    }
+    
+    h2 i {
+      margin-right: 10px;
+      color: #614385;
+    }
+    
+    input, select, textarea, button {
+      padding: 10px 15px;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+      margin: 5px;
+      font-size: 14px;
+      transition: all 0.3s;
+    }
+    
+    textarea {
+      min-height: 80px;
+      width: calc(100% - 10px);
+      resize: vertical;
+    }
+    
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: #614385;
+      box-shadow: 0 0 5px rgba(97, 67, 133, 0.5);
+    }
+    
+    button {
+      background-color: #614385;
+      color: white;
+      border: none;
+      cursor: pointer;
+      padding: 10px 20px;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+    
+    button:hover {
+      background-color: #4a346a;
+    }
+    
+    button.delete {
+      background-color: #e74c3c;
+    }
+    
+    button.delete:hover {
+      background-color: #c0392b;
+    }
+    
+    button.view {
+      background-color: #3498db;
+    }
+    
+    button.view:hover {
+      background-color: #2980b9;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      background: #fff;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    
+    th, td {
+      padding: 15px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    
+    th {
+      background-color: #614385;
+      color: white;
+      font-weight: bold;
+    }
+    
+    tr:hover {
+      background-color: #f5f5f5;
+    }
+    
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+    
+    .action-icons {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .action-icon {
+      cursor: pointer;
+      color: #614385;
+      transition: color 0.3s;
+    }
+    
+    .action-icon.edit:hover {
+      color: #4a346a;
+    }
+    
+    .action-icon.delete:hover {
+      color: #e74c3c;
+    }
+    
+    .form-row {
+      display: flex;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+      align-items: center;
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 20px;
+      font-size: 18px;
+      color: #7f8c8d;
+    }
+    
+    .low-stock {
+      color: #e74c3c;
+      font-weight: bold;
+    }
+    
+    #notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 15px 25px;
+      border-radius: 5px;
+      color: white;
+      opacity: 0;
+      transition: opacity 0.5s;
+      z-index: 1000;
+    }
+    
+    .notification-success {
+      background-color: #2ecc71;
+    }
+    
+    .notification-error {
+      background-color: #e74c3c;
+    }
+    
+    @media (max-width: 768px) {
+      .form-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      input, select, textarea {
+        width: 100%;
+        margin: 5px 0;
+      }
+      
+      .stat-card {
+        width: 100%;
+      }
+    }
+
+    /* navigation */
+    .main-nav {
+      background: linear-gradient(135deg, #2c3e50, #34495e);
+      width: 100%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
+      padding: 0;
+      transition: all 0.3s ease;
+    }
+    
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+    }
+    
+    .nav-logo {
+      display: flex;
+      align-items: center;
+    }
+    
+    .nav-logo a {
+      color: white;
+      font-size: 26px;
+      font-weight: 700;
+      text-decoration: none;
+      padding: 15px 0;
+      display: flex;
+      align-items: center;
+      letter-spacing: 0.5px;
+      transition: transform 0.3s ease;
+    }
+    
+    .nav-logo a:hover {
+      transform: scale(1.05);
+    }
+    
+    .nav-logo i {
+      margin-right: 10px;
+      font-size: 24px;
+      color: #3498db;
+    }
+    
+    .nav-links {
+      display: flex;
+      align-items: center;
+      height: 60px;
+    }
+    
+    .nav-links a {
+      color: #ecf0f1;
+      text-decoration: none;
+      padding: 0 15px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      position: relative;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    
+    .nav-links a:hover {
+      color: #3498db;
+      background-color: rgba(52, 152, 219, 0.1);
+    }
+    
+    .nav-links a.active {
+      color: white;
+      font-weight: 600;
+    }
+    
+    .nav-links a.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background-color: #3498db;
+      transition: transform 0.3s ease;
+    }
+    
+    .nav-links a i {
+      margin-right: 6px;
+      font-size: 16px;
+    }
+    
+    .nav-toggle {
+      display: none;
+      background: none;
+      border: none;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+    }
+    
+    /* Responsive styles */
+    @media (max-width: 992px) {
+      .nav-links a {
+        padding: 0 10px;
+        font-size: 14px;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      body {
+        padding-top: 60px;
+      }
+      
+      .nav-container {
+        padding: 0 15px;
+      }
+      
+      .nav-toggle {
+        display: block;
+      }
+      
+      .nav-links {
+        position: absolute;
+        top: 60px;
+        left: 0;
+        flex-direction: column;
+        background: linear-gradient(135deg, #2c3e50, #34495e);
+        width: 100%;
+        height: auto;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.5s ease;
+      }
+      
+      .nav-links.active {
+        max-height: 500px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+      
+      .nav-links a {
+        width: 100%;
+        padding: 15px 20px;
+        height: auto;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      
+      .nav-links a.active::after {
+        display: none;
+      }
+      
+      .nav-links a.active {
+        background-color: #3498db;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="main-nav">
+    <div class="nav-container">
+      <div class="nav-logo">
+        <a href="dashboard.html"><i class="fas fa-warehouse"></i>Ware2Go</a>
+      </div>
+      <button class="nav-toggle" id="navToggle">
+        <i class="fas fa-bars"></i>
+      </button>
+      <div class="nav-links" id="navLinks">
+        <a href="warehouse.html"><i class="fas fa-building"></i>Warehouse</a>
+        <a href="inventory.html"><i class="fas fa-clipboard-list"></i>Inventory</a>
+        <a href="location.html"><i class="fas fa-map-marker-alt"></i>Location</a>
+        <a href="products.html" class="active"><i class="fas fa-box"></i>Products</a>
+        <a href="orders.html"><i class="fas fa-shopping-cart"></i>Orders</a>
+        <a href="suppliers.html"><i class="fas fa-truck"></i>Suppliers</a>
+        <a href="transport.html"><i class="fas fa-shipping-fast"></i>Transport</a>
+        <a href="feedback.html"><i class="fas fa-comment-alt"></i>Feedback</a>
+      </div>
+    </div>
+  </nav>
+  <div class="container">
+    <header>
+      <h1>Products Dashboard</h1>
+      <p class="description">
+        Manage your product catalog with ease. Add new products, update pricing and inventory levels, and maintain accurate product information across your business.
+      </p>
+    </header>
+    
+    <div class="stats-container">
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-box"></i></div>
+        <div class="stat-value" id="total-products">0</div>
+        <div class="stat-label">Total Products</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-tags"></i></div>
+        <div class="stat-value" id="unique-categories">0</div>
+        <div class="stat-label">Product Categories</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">₹</div>
+        <div class="stat-value" id="average-price">0.00</div>
+        <div class="stat-label">Average Price</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-cubes"></i></div>
+        <div class="stat-value" id="total-stock">0</div>
+        <div class="stat-label">Total Items in Stock</div>
+      </div>
+    </div>
+    
+    <div class="form-section">
+      <h2><i class="fas fa-plus-circle"></i>Add New Product</h2>
+      <form id="productForm">
+        <div class="form-row">
+          <input type="text" id="name" placeholder="Product Name" required />
+          <input type="text" id="category" placeholder="Category" />
+          <input type="number" step="0.01" id="price_per_unit" placeholder="Price per Unit" required />
+        </div>
+        <div class="form-row">
+          <input type="number" id="supplier_id" placeholder="Supplier ID" />
+          <input type="number" id="quantity_in_stock" placeholder="Quantity in Stock" required />
+        </div>
+        <div class="form-row">
+          <textarea id="description" placeholder="Product Description"></textarea>
+        </div>
+        <div class="form-row">
+          <button type="button" onclick="insertProduct()"><i class="fas fa-save"></i> Save Product</button>
+        </div>
+      </form>
+    </div>
+    
+    <div class="form-section">
+      <h2><i class="fas fa-edit"></i>Update/Delete Product</h2>
+      <div class="form-row">
+        <input type="number" id="product_id" placeholder="Product ID" />
+        <select id="update_field">
+          <option value="name">Name</option>
+          <option value="category">Category</option>
+          <option value="price_per_unit">Price per Unit</option>
+          <option value="supplier_id">Supplier ID</option>
+          <option value="quantity_in_stock">Quantity in Stock</option>
+          <option value="description">Description</option>
+        </select>
+        <input type="text" id="update_value" placeholder="New Value" />
+      </div>
+      <div class="form-row">
+        <button type="button" onclick="updateProduct()"><i class="fas fa-sync"></i> Update Field</button>
+        <button type="button" class="delete" onclick="deleteProduct()"><i class="fas fa-trash"></i> Delete</button>
+        <button type="button" class="view" onclick="fetchProducts()"><i class="fas fa-list"></i> View All</button>
+      </div>
+    </div>
+    
+    <div id="table-container">
+      <h2><i class="fas fa-th-list"></i>Products List</h2>
+      <table id="productTable">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Price (in ₹)</th>
+            <th>Supplier ID</th>
+            <th>Stock</th>
+            <th>Description</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td colspan="8" class="loading">Loading products...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
+  <div id="notification"></div>
+  
+  <script>
+    // Show notification function
+    function showNotification(message, type) {
+      const notification = document.getElementById('notification');
+      notification.textContent = message;
+      notification.className = type === 'success' ? 'notification-success' : 'notification-error';
+      notification.style.opacity = 1;
+      
+      setTimeout(() => {
+        notification.style.opacity = 0;
+      }, 3000);
+    }
+    
+    // Insert product function
+    function insertProduct() {
+      const data = {
+        name: document.getElementById("name").value,
+        category: document.getElementById("category").value,
+        price_per_unit: document.getElementById("price_per_unit").value,
+        supplier_id: document.getElementById("supplier_id").value,
+        quantity_in_stock: document.getElementById("quantity_in_stock").value,
+        description: document.getElementById("description").value
+      };
+      
+      // Basic validation
+      if (!data.name || !data.price_per_unit || !data.quantity_in_stock) {
+        showNotification("Product Name, Price, and Quantity are required", "error");
+        return;
+      }
+
+      fetch('http://localhost:8000/products.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ action: 'insert', data })
+      })
+      .then(res => res.json())
+      .then(response => {
+        showNotification(response.message || "Product added successfully", "success");
+        document.getElementById("productForm").reset();
+        fetchProducts();
+      })
+      .catch(error => {
+        showNotification("Failed to connect to server", "error");
+        console.error("Error:", error);
+      });
+    }
+
+    // Update product function
+    function updateProduct() {
+      const id = document.getElementById("product_id").value;
+      const field = document.getElementById("update_field").value;
+      const value = document.getElementById("update_value").value;
+      
+      if (!id || !value) {
+        showNotification("Please enter Product ID and new value", "error");
+        return;
+      }
+
+      fetch('http://localhost:8000/products.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ action: 'update_field', id, field, value })
+      })
+      .then(res => res.json())
+      .then(response => {
+        showNotification(response.message || response.error || "Product updated successfully", "success");
+        fetchProducts();
+        document.getElementById("product_id").value = '';
+        document.getElementById("update_value").value = '';
+      })
+      .catch(error => {
+        showNotification("Failed to connect to server", "error");
+        console.error("Error:", error);
+      });
+    }
+
+    // Delete product function
+    function deleteProduct() {
+      const id = document.getElementById("product_id").value;
+      
+      if (!id) {
+        showNotification("Please enter a Product ID to delete", "error");
+        return;
+      }
+      
+      if (!confirm("Are you sure you want to delete this product?")) {
+        return;
+      }
+
+      fetch('http://localhost:8000/products.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ action: 'delete', id })
+      })
+      .then(res => res.json())
+      .then(response => {
+        showNotification(response.message || "Product deleted successfully", "success");
+        fetchProducts();
+        document.getElementById("product_id").value = '';
+      })
+      .catch(error => {
+        showNotification("Failed to connect to server", "error");
+        console.error("Error:", error);
+      });
+    }
+
+    // Fill form for editing
+    function fillUpdateForm(id) {
+      document.getElementById("product_id").value = id;
+      document.getElementById("update_field").focus();
+    }
+
+    // Fetch products function
+    function fetchProducts() {
+      const tbody = document.querySelector('#productTable tbody');
+      tbody.innerHTML = '<tr><td colspan="8" class="loading">Loading products...</td></tr>';
+      
+      fetch('http://localhost:8000/products.php?action=select')
+        .then(res => res.json())
+        .then(data => {
+          tbody.innerHTML = '';
+          
+          if (data.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="8" class="loading">No products found</td></tr>';
+            updateStats(0, 0, 0, 0);
+            return;
+          }
+          
+          const totalProducts = data.length;
+          const categories = new Set();
+          let totalPrice = 0;
+          let totalStock = 0;
+          
+          data.forEach(row => {
+            if (row.category) categories.add(row.category);
+            
+            const price = parseFloat(row.price_per_unit) || 0;
+            const stock = parseInt(row.quantity_in_stock) || 0;
+            
+            totalPrice += price;
+            totalStock += stock;
+            
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td>${row.product_id}</td>
+              <td>${row.name}</td>
+              <td>${row.category || 'N/A'}</td>
+              <td>${price.toFixed(2)}</td>
+              <td>${row.supplier_id || 'N/A'}</td>
+              <td>${stock}</td>
+              <td>${row.description || 'N/A'}</td>
+              <td class="action-icons">
+                <i class="fas fa-edit action-icon edit" onclick="fillUpdateForm(${row.product_id})" title="Edit"></i>
+                <i class="fas fa-trash action-icon delete" onclick="if(confirm('Delete product #${row.product_id}?')) { document.getElementById('product_id').value=${row.product_id}; deleteProduct(); }" title="Delete"></i>
+              </td>
+            `;
+            tbody.appendChild(tr);
+          });
+          
+          const avgPrice = totalProducts > 0 ? totalPrice / totalProducts : 0;
+          updateStats(totalProducts, categories.size, avgPrice, totalStock);
+        })
+        .catch(error => {
+          tbody.innerHTML = '<tr><td colspan="8" class="loading">Error connecting to server</td></tr>';
+          console.error("Error:", error);
+          updateStats(0, 0, 0, 0);
+        });
+    }
+    
+    // Update statistics function
+    function updateStats(products, categories, avgPrice, stock) {
+      document.getElementById('total-products').textContent = products;
+      document.getElementById('unique-categories').textContent = categories;
+      document.getElementById('average-price').textContent = `${avgPrice.toFixed(2)}`;
+      document.getElementById('total-stock').textContent = stock.toLocaleString();
+    }
+    
+    // Initialize on page load
+    window.onload = function() {
+      fetchProducts();
+      
+      // Add keypress event listeners for better UX
+      document.getElementById('product_id').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          document.getElementById('update_field').focus();
+        }
+      });
+      
+      document.getElementById('update_value').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          updateProduct();
+        }
+      });
+    };
+    document.getElementById('navToggle').addEventListener('click', function() {
+      document.getElementById('navLinks').classList.toggle('active');
+    });
+    
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', function(event) {
+      const navLinks = document.getElementById('navLinks');
+      const navToggle = document.getElementById('navToggle');
+      
+      if (navLinks.classList.contains('active') && 
+          !navLinks.contains(event.target) && 
+          event.target !== navToggle) {
+        navLinks.classList.remove('active');
+      }
+    });
+    
+    // Set active navigation link
+    document.addEventListener('DOMContentLoaded', function() {
+      const currentPage = window.location.pathname.split('/').pop();
+      const navLinks = document.querySelectorAll('.nav-links a');
+      
+      navLinks.forEach(link => {
+        const linkPage = link.getAttribute('href');
+        if (linkPage === currentPage) {
+          link.classList.add('active');
+        } else {
+          link.classList.remove('active');
+        }
+      });
+    });
+    
+    // Shrink navigation on scroll
+    window.addEventListener('scroll', function() {
+      const nav = document.querySelector('.main-nav');
+      if (window.scrollY > 50) {
+        nav.style.padding = '0';
+      } else {
+        nav.style.padding = '0';
+      }
+    });
+  </script>
+</body>
+</html>

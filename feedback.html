@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Feedback Management - Ware2Go</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+        :root {
+      --primary-color: #2563eb;
+      --primary-hover: #1d4ed8;
+      --secondary-color: #f59e0b;
+      --accent-color: #10b981;
+      --danger-color: #ef4444;
+      --danger-hover: #dc2626;
+      --dark-color: #1e293b;
+      --light-color: #f8fafc;
+      --text-dark: #334155;
+      --text-light: #94a3b8;
+      --border-color: #e2e8f0;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+      --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
+      --radius-sm: 0.25rem;
+      --radius-md: 0.5rem;
+      --radius-lg: 0.75rem;
+      --header-height: 70px;
+      --transition: all 0.3s ease;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Times New Roman', Times, serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #fbc2eb, #a6c1ee, #c2e9fb);
+      padding-top: var(--header-height);
+      color: var(--text-dark);
+      line-height: 1.6;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    
+    header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+      padding-bottom: 1.5rem;
+      position: relative;
+    }
+    
+    header::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 4px;
+      background: var(--primary-color);
+      border-radius: 2px;
+    }
+    
+    h1 {
+      color: var(--dark-color);
+      margin-bottom: 0.75rem;
+      font-size: 2.5rem;
+      font-weight: 700;
+    }
+    
+    .description {
+      color: var(--text-light);
+      max-width: 800px;
+      margin: 0 auto;
+      font-size: 1.1rem;
+    }
+    
+    .stats-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+    
+    .stat-card {
+      background-color: white;
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      box-shadow: var(--shadow-md);
+      text-align: center;
+      transition: var(--transition);
+      border-top: 4px solid var(--primary-color);
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .stat-card p {
+      color: var(--text-light);
+      margin: 0 0 0.5rem;
+      font-size: 1.1rem;
+      font-weight: 500;
+    }
+    
+    .stat-card h3 {
+      font-size: 2.25rem;
+      margin: 0.5rem 0;
+      color: var(--primary-color);
+    }
+    
+    .form-section {
+      background-color: white;
+      border-radius: var(--radius-md);
+      padding: 1.75rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow-md);
+      transition: var(--transition);
+    }
+    
+    .form-section:hover {
+      box-shadow: var(--shadow-lg);
+    }
+    
+    h2, h4 {
+      color: var(--dark-color);
+      margin-top: 0;
+      margin-bottom: 1.25rem;
+      font-size: 1.5rem;
+      font-weight: 600;
+      position: relative;
+      padding-bottom: 0.75rem;
+    }
+    
+    h4::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 40px;
+      height: 3px;
+      background: var(--primary-color);
+      border-radius: 2px;
+    }
+    
+    input, select, textarea {
+      margin: 0.5rem;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      font-size: 1rem;
+      color: var(--text-dark);
+      transition: var(--transition);
+      outline: none;
+      background-color: white;
+    }
+    
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    
+    textarea {
+      width: calc(100% - 1rem);
+      resize: vertical;
+      min-height: 100px;
+    }
+    
+    button {
+      margin: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      color: white;
+      background-color: var(--primary-color);
+      box-shadow: var(--shadow-sm);
+    }
+    
+    button:hover {
+      background-color: var(--primary-hover);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+    
+    button:active {
+      transform: translateY(0);
+    }
+    
+    button.delete {
+      background-color: var(--danger-color);
+    }
+    
+    button.delete:hover {
+      background-color: var(--danger-hover);
+    }
+    
+    table {
+      border-collapse: separate;
+      border-spacing: 0;
+      width: 100%;
+      margin-top: 1.5rem;
+      background-color: white;
+      box-shadow: var(--shadow-md);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+    
+    th, td {
+      border: none;
+      border-bottom: 1px solid var(--border-color);
+      padding: 1rem;
+      text-align: left;
+    }
+    
+    th {
+      background-color: #f8fafc;
+      color: var(--text-dark);
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.875rem;
+      letter-spacing: 0.05em;
+    }
+    
+    tr:last-child td {
+      border-bottom: none;
+    }
+    
+    tr:nth-child(even) {
+      background-color: #f8fafc;
+    }
+    
+    tr:hover {
+      background-color: #f0f7ff;
+    }
+    
+    td button {
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+      margin: 0;
+    }
+    
+    .main-nav {
+      background: linear-gradient(135deg, #2c3e50, #34495e);
+      width: 100%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
+      padding: 0;
+      transition: all 0.3s ease;
+    }
+    
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+    }
+    
+    .nav-logo {
+      display: flex;
+      align-items: center;
+    }
+    
+    .nav-logo a {
+      color: white;
+      font-size: 26px;
+      font-weight: 700;
+      text-decoration: none;
+      padding: 15px 0;
+      display: flex;
+      align-items: center;
+      letter-spacing: 0.5px;
+      transition: transform 0.3s ease;
+    }
+    
+    .nav-logo a:hover {
+      transform: scale(1.05);
+    }
+    
+    .nav-logo i {
+      margin-right: 10px;
+      font-size: 24px;
+      color: #3498db;
+    }
+    
+    .nav-links {
+      display: flex;
+      align-items: center;
+      height: 60px;
+    }
+    
+    .nav-links a {
+      color: #ecf0f1;
+      text-decoration: none;
+      padding: 0 15px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      position: relative;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    
+    .nav-links a:hover {
+      color: #3498db;
+      background-color: rgba(52, 152, 219, 0.1);
+    }
+    
+    .nav-links a.active {
+      color: white;
+      font-weight: 600;
+    }
+    
+    .nav-links a.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background-color: #3498db;
+      transition: transform 0.3s ease;
+    }
+    
+    .nav-links a i {
+      margin-right: 6px;
+      font-size: 16px;
+    }
+    
+    .nav-toggle {
+      display: none;
+      background: none;
+      border: none;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+    }
+    
+    /* Responsive styles */
+    @media (max-width: 992px) {
+      .nav-links a {
+        padding: 0 10px;
+        font-size: 14px;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      body {
+        padding-top: 60px;
+      }
+      
+      .nav-container {
+        padding: 0 15px;
+      }
+      
+      .nav-toggle {
+        display: block;
+      }
+      
+      .nav-links {
+        position: absolute;
+        top: 60px;
+        left: 0;
+        flex-direction: column;
+        background: linear-gradient(135deg, #2c3e50, #34495e);
+        width: 100%;
+        height: auto;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.5s ease;
+      }
+      
+      .nav-links.active {
+        max-height: 500px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+      
+      .nav-links a {
+        width: 100%;
+        padding: 15px 20px;
+        height: auto;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      
+      .nav-links a.active::after {
+        display: none;
+      }
+      
+      .nav-links a.active {
+        background-color: #3498db;
+      }
+    }
+    
+    /* Form layout improvements */
+    #feedbackForm {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 0.75rem;
+    }
+    
+    #feedbackForm textarea {
+      grid-column: 1 / -1;
+      margin: 0.5rem 0;
+      width: 100%;
+    }
+    
+    #feedbackForm button {
+      margin-top: 1rem;
+      width: fit-content;
+    }
+    
+    /* Update/delete form improvements */
+    .update-form {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    /* Animation effects */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .form-section, .stat-card, table {
+      animation: fadeIn 0.6s ease-out forwards;
+    }
+    
+    .stat-card:nth-child(1) { animation-delay: 0.1s; }
+    .stat-card:nth-child(2) { animation-delay: 0.2s; }
+    .stat-card:nth-child(3) { animation-delay: 0.3s; }
+    .stat-card:nth-child(4) { animation-delay: 0.4s; }
+    
+    /* Responsive styles */
+    @media (max-width: 992px) {
+      .nav-links a {
+        padding: 0 0.875rem;
+        font-size: 0.9375rem;
+      }
+      
+      .stats-container {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
+    @media (max-width: 768px) {
+      body {
+        padding-top: 60px;
+      }
+      
+      .container {
+        padding: 1.5rem;
+      }
+      
+      h1 {
+        font-size: 2rem;
+      }
+      
+      .nav-container {
+        padding: 0 1.5rem;
+      }
+      
+      .nav-toggle {
+        display: block;
+        color: var(--dark-color);
+        background: none;
+        box-shadow: none;
+      }
+      
+      .nav-toggle:hover {
+        color: var(--primary-color);
+        background: none;
+        box-shadow: none;
+        transform: none;
+      }
+      
+      .nav-links {
+        position: absolute;
+        top: var(--header-height);
+        left: 0;
+        flex-direction: column;
+        background: white;
+        width: 100%;
+        height: auto;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.5s ease;
+        box-shadow: var(--shadow-md);
+      }
+      
+      .nav-links.active {
+        max-height: 500px;
+      }
+      
+      .nav-links a {
+        width: 100%;
+        padding: 1rem 1.5rem;
+        height: auto;
+        border-top: 1px solid var(--border-color);
+      }
+      
+      .nav-links a.active::after {
+        display: none;
+      }
+      
+      .nav-links a.active {
+        background-color: #f0f7ff;
+      }
+      
+      #feedbackForm {
+        grid-template-columns: 1fr;
+      }
+      
+      .stats-container {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .container {
+        padding: 1rem;
+      }
+      
+      h1 {
+        font-size: 1.75rem;
+      }
+      
+      .form-section {
+        padding: 1.25rem;
+      }
+      
+      th, td {
+        padding: 0.75rem;
+        font-size: 0.875rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="main-nav">
+    <div class="nav-container">
+      <div class="nav-logo">
+        <a href="dashboard.html"><i class="fas fa-warehouse"></i>Ware2Go</a>
+      </div>
+      <button class="nav-toggle" id="navToggle">
+        <i class="fas fa-bars"></i>
+      </button>
+      <div class="nav-links" id="navLinks">
+        <a href="warehouse.html"><i class="fas fa-building"></i>Warehouse</a>
+        <a href="inventory.html"><i class="fas fa-clipboard-list"></i>Inventory</a>
+        <a href="location.html"><i class="fas fa-map-marker-alt"></i>Location</a>
+        <a href="products.html" class="active"><i class="fas fa-box"></i>Products</a>
+        <a href="orders.html"><i class="fas fa-shopping-cart"></i>Orders</a>
+        <a href="suppliers.html"><i class="fas fa-truck"></i>Suppliers</a>
+        <a href="transport.html"><i class="fas fa-shipping-fast"></i>Transport</a>
+        <a href="feedback.html"><i class="fas fa-comment-alt"></i>Feedback</a>
+      </div>
+    </div>
+  </nav>
+  
+  <div class="container">
+    <header>
+      <h1>Feedback Dashboard</h1>
+      <p class="description">
+        Collect and manage customer feedback effortlessly. View submitted responses, categorize feedback by type, and gain insights to improve your products and services.      </p>
+    </header>
+    
+    <div class="stats-container">
+      <div class="stat-card">
+        <p>Total Feedback</p>
+        <h3 id="totalFeedback">0</h3>
+      </div>
+      <div class="stat-card">
+        <p>Average Rating</p>
+        <h3 id="avgRating">0</h3>
+      </div>
+      <div class="stat-card">
+        <p>Highest Rating</p>
+        <h3 id="highestRating">0</h3>
+      </div>
+      <div class="stat-card">
+        <p>Lowest Rating</p>
+        <h3 id="lowestRating">0</h3>
+      </div>
+    </div>
+    
+    <div class="form-section">
+      <h4>Add New Feedback</h4>
+      <form id="feedbackForm">
+        <input type="number" id="user_id" placeholder="User ID" required />
+        <input type="number" id="warehouse_id" placeholder="Warehouse ID (optional)" />
+        <input type="number" id="order_id" placeholder="Order ID (optional)" />
+        <textarea id="comments" placeholder="Comments" rows="4"></textarea>
+        <input type="number" id="rating" placeholder="Rating (1–5)" min="1" max="5" required />
+        <br>
+        <button type="button" onclick="insertFeedback()">Save</button>
+      </form>
+    </div>
+
+    <div class="form-section">
+      <h4>Update/Delete Feedback</h4>
+      <input type="number" id="feedback_id" placeholder="Feedback ID" />
+      <select id="update_field">
+        <option value="user_id">User ID</option>
+        <option value="warehouse_id">Warehouse ID</option>
+        <option value="order_id">Order ID</option>
+        <option value="comments">Comments</option>
+        <option value="rating">Rating</option>
+      </select>
+      <input type="text" id="update_value" placeholder="New Value" />
+      <button type="button" onclick="updateFeedback()">Update Field</button>
+      <button type="button" onclick="deleteFeedback()" class="delete">Delete</button>
+      <button type="button" onclick="fetchFeedback()">View All</button>
+    </div>
+
+    <h4>Feedback List</h4>
+    <table id="feedbackTable">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>User ID</th>
+          <th>Warehouse ID</th>
+          <th>Order ID</th>
+          <th>Comments</th>
+          <th>Rating</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td colspan="7">Loading feedback items...</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    function insertFeedback() {
+      const data = {
+        user_id: document.getElementById("user_id").value,
+        warehouse_id: document.getElementById("warehouse_id").value,
+        order_id: document.getElementById("order_id").value,
+        comments: document.getElementById("comments").value,
+        rating: document.getElementById("rating").value
+      };
+
+      fetch('http://localhost:8000/feedback.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'insert', data })
+      })
+      .then(res => res.json())
+      .then(response => {
+        alert(response.message || response.error);
+        fetchFeedback();
+        document.getElementById("feedbackForm").reset();
+      });
+    }
+
+    function updateFeedback() {
+      const id = document.getElementById("feedback_id").value;
+      const field = document.getElementById("update_field").value;
+      const value = document.getElementById("update_value").value;
+      if (!id || !field || !value) return alert("All fields required");
+
+      fetch('http://localhost:8000/feedback.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'update_field', id, field, value })
+      })
+      .then(res => res.json())
+      .then(response => {
+        alert(response.message || response.error);
+        fetchFeedback();
+      });
+    }
+
+    function deleteFeedback() {
+      const id = document.getElementById("feedback_id").value;
+      if (!id) return alert("Enter ID to delete");
+
+      fetch('http://localhost:8000/feedback.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'delete', id })
+      })
+      .then(res => res.json())
+      .then(response => {
+        alert(response.message);
+        fetchFeedback();
+      });
+    }
+
+    function fetchFeedback() {
+      fetch('http://localhost:8000/feedback.php?action=select')
+        .then(res => res.json())
+        .then(data => {
+          const tbody = document.querySelector('#feedbackTable tbody');
+          tbody.innerHTML = '';
+          
+          if (data.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="7">No feedback items found</td></tr>';
+            return;
+          }
+          
+          // Update statistics
+          document.getElementById('totalFeedback').textContent = data.length;
+          
+          let totalRating = 0;
+          let highest = 0;
+          let lowest = 5;
+          
+          data.forEach(row => {
+            const rating = parseInt(row.rating);
+            totalRating += rating;
+            highest = Math.max(highest, rating);
+            lowest = Math.min(lowest, rating);
+            
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td>${row.feedback_id}</td>
+              <td>${row.user_id}</td>
+              <td>${row.warehouse_id ?? ''}</td>
+              <td>${row.order_id ?? ''}</td>
+              <td>${row.comments}</td>
+              <td>${row.rating}</td>
+              <td>
+                <button onclick="document.getElementById('feedback_id').value=${row.feedback_id}">Edit</button>
+              </td>`;
+            tbody.appendChild(tr);
+          });
+          
+          document.getElementById('avgRating').textContent = (totalRating / data.length).toFixed(1);
+          document.getElementById('highestRating').textContent = highest;
+          document.getElementById('lowestRating').textContent = lowest;
+        });
+    }
+
+    window.onload = fetchFeedback;
+    
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', function(event) {
+      const navLinks = document.getElementById('navLinks');
+      const navToggle = document.getElementById('navToggle');
+      
+      if (navLinks.classList.contains('active') && 
+          !navLinks.contains(event.target) && 
+          event.target !== navToggle) {
+        navLinks.classList.remove('active');
+      }
+    });
+    
+    // Set active navigation link
+    document.addEventListener('DOMContentLoaded', function() {
+      const currentPage = window.location.pathname.split('/').pop();
+      const navLinks = document.querySelectorAll('.nav-links a');
+      
+      navLinks.forEach(link => {
+        const linkPage = link.getAttribute('href');
+        if (linkPage === currentPage) {
+          link.classList.add('active');
+        } else {
+          link.classList.remove('active');
+        }
+      });
+    });
+    
+    // Shrink navigation on scroll
+    window.addEventListener('scroll', function() {
+      const nav = document.querySelector('.main-nav');
+      if (window.scrollY > 50) {
+        nav.style.padding = '0';
+      } else {
+        nav.style.padding = '0';
+      }
+    });
+  </script>
+</body>
+</html>

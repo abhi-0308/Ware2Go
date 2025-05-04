@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Suppliers Dashboard</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Times New Roman', Times, serif;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #136a8a, #267871, #00bf8f);
+      background-size: 400% 400%;
+      animation: gradient 15s ease infinite;
+      color: #333;
+      min-height: 100vh;
+      padding: 20px;
+      overflow-x: hidden;
+      padding-top: 70px; 
+    }
+    
+    @keyframes gradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background-color: rgba(255, 255, 255, 0.9);
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      padding: 25px;
+    }
+    
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid #eee;
+    }
+    
+    h1 {
+      color: #2c3e50;
+      margin-bottom: 10px;
+      font-size: 36px;
+    }
+    
+    .description {
+      color: #7f8c8d;
+      font-size: 16px;
+      line-height: 1.6;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .stats-container {
+      display: flex;
+      justify-content: space-around;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+    
+    .stat-card {
+      background: #fff;
+      border-radius: 10px;
+      padding: 15px;
+      width: 23%;
+      min-width: 200px;
+      margin: 10px 0;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      text-align: center;
+      transition: transform 0.3s;
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-5px);
+    }
+    
+    .stat-icon {
+      font-size: 28px;
+      margin-bottom: 10px;
+      color: #008970;
+    }
+    
+    .stat-value {
+      font-size: 24px;
+      font-weight: bold;
+      color: #2c3e50;
+    }
+    
+    .stat-label {
+      font-size: 14px;
+      color: #7f8c8d;
+    }
+    
+    .form-section {
+      background: #fff;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    h2 {
+      color: #2c3e50;
+      margin-bottom: 15px;
+      font-size: 24px;
+      display: flex;
+      align-items: center;
+    }
+    
+    h2 i {
+      margin-right: 10px;
+      color: #008970;
+    }
+    
+    input, select, textarea, button {
+      padding: 10px 15px;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+      margin: 5px;
+      font-size: 14px;
+      transition: all 0.3s;
+    }
+    
+    textarea {
+      min-height: 80px;
+      width: calc(100% - 10px);
+      resize: vertical;
+    }
+    
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: #008970;
+      box-shadow: 0 0 5px rgba(0, 137, 112, 0.5);
+    }
+    
+    button {
+      background-color: #008970;
+      color: white;
+      border: none;
+      cursor: pointer;
+      padding: 10px 20px;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+    
+    button:hover {
+      background-color: #006d58;
+    }
+    
+    button.delete {
+      background-color: #e74c3c;
+    }
+    
+    button.delete:hover {
+      background-color: #c0392b;
+    }
+    
+    button.view {
+      background-color: #2ecc71;
+    }
+    
+    button.view:hover {
+      background-color: #27ae60;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      background: #fff;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    
+    th, td {
+      padding: 15px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    
+    th {
+      background-color: #008970;
+      color: white;
+      font-weight: bold;
+    }
+    
+    tr:hover {
+      background-color: #f5f5f5;
+    }
+    
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+    
+    .action-icons {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .action-icon {
+      cursor: pointer;
+      color: #008970;
+      transition: color 0.3s;
+    }
+    
+    .action-icon.edit:hover {
+      color: #006d58;
+    }
+    
+    .action-icon.delete:hover {
+      color: #e74c3c;
+    }
+    
+    .form-row {
+      display: flex;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+      align-items: center;
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 20px;
+      font-size: 18px;
+      color: #7f8c8d;
+    }
+    
+    .top-rated {
+      color: #f39c12;
+      font-weight: bold;
+    }
+    
+    #notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 15px 25px;
+      border-radius: 5px;
+      color: white;
+      opacity: 0;
+      transition: opacity 0.5s;
+      z-index: 1000;
+    }
+    
+    .notification-success {
+      background-color: #2ecc71;
+    }
+    
+    .notification-error {
+      background-color: #e74c3c;
+    }
+    
+    @media (max-width: 768px) {
+      .form-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      input, select, textarea {
+        width: 100%;
+        margin: 5px 0;
+      }
+      
+      .stat-card {
+        width: 100%;
+      }
+    }
+    .main-nav {
+      background: linear-gradient(135deg, #2c3e50, #34495e);
+      width: 100%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
+      padding: 0;
+      transition: all 0.3s ease;
+    }
+    
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+    }
+    
+    .nav-logo {
+      display: flex;
+      align-items: center;
+    }
+    
+    .nav-logo a {
+      color: white;
+      font-size: 26px;
+      font-weight: 700;
+      text-decoration: none;
+      padding: 15px 0;
+      display: flex;
+      align-items: center;
+      letter-spacing: 0.5px;
+      transition: transform 0.3s ease;
+    }
+    
+    .nav-logo a:hover {
+      transform: scale(1.05);
+    }
+    
+    .nav-logo i {
+      margin-right: 10px;
+      font-size: 24px;
+      color: #3498db;
+    }
+    
+    .nav-links {
+      display: flex;
+      align-items: center;
+      height: 60px;
+    }
+    
+    .nav-links a {
+      color: #ecf0f1;
+      text-decoration: none;
+      padding: 0 15px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      position: relative;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    
+    .nav-links a:hover {
+      color: #3498db;
+      background-color: rgba(52, 152, 219, 0.1);
+    }
+    
+    .nav-links a.active {
+      color: white;
+      font-weight: 600;
+    }
+    
+    .nav-links a.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background-color: #3498db;
+      transition: transform 0.3s ease;
+    }
+    
+    .nav-links a i {
+      margin-right: 6px;
+      font-size: 16px;
+    }
+    
+    .nav-toggle {
+      display: none;
+      background: none;
+      border: none;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+    }
+    
+    /* Responsive styles */
+    @media (max-width: 992px) {
+      .nav-links a {
+        padding: 0 10px;
+        font-size: 14px;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      body {
+        padding-top: 60px;
+      }
+      
+      .nav-container {
+        padding: 0 15px;
+      }
+      
+      .nav-toggle {
+        display: block;
+      }
+      
+      .nav-links {
+        position: absolute;
+        top: 60px;
+        left: 0;
+        flex-direction: column;
+        background: linear-gradient(135deg, #2c3e50, #34495e);
+        width: 100%;
+        height: auto;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.5s ease;
+      }
+      
+      .nav-links.active {
+        max-height: 500px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+      
+      .nav-links a {
+        width: 100%;
+        padding: 15px 20px;
+        height: auto;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      
+      .nav-links a.active::after {
+        display: none;
+      }
+      
+      .nav-links a.active {
+        background-color: #3498db;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="main-nav">
+    <div class="nav-container">
+      <div class="nav-logo">
+        <a href="dashboard.html"><i class="fas fa-warehouse"></i>Ware2Go</a>
+      </div>
+      <button class="nav-toggle" id="navToggle">
+        <i class="fas fa-bars"></i>
+      </button>
+      <div class="nav-links" id="navLinks">
+        <a href="warehouse.html"><i class="fas fa-building"></i>Warehouse</a>
+        <a href="inventory.html"><i class="fas fa-clipboard-list"></i>Inventory</a>
+        <a href="location.html"><i class="fas fa-map-marker-alt"></i>Location</a>
+        <a href="products.html" class="active"><i class="fas fa-box"></i>Products</a>
+        <a href="orders.html"><i class="fas fa-shopping-cart"></i>Orders</a>
+        <a href="suppliers.html"><i class="fas fa-truck"></i>Suppliers</a>
+        <a href="transport.html"><i class="fas fa-shipping-fast"></i>Transport</a>
+        <a href="feedback.html"><i class="fas fa-comment-alt"></i>Feedback</a>
+      </div>
+    </div>
+  </nav>
+  <div class="container">
+    <header>
+      <h1>Suppliers Dashboard</h1>
+      <p class="description">
+        Manage your suppliers efficiently with our dashboard. Add new suppliers, update contact information, and track supplier ratings. Keep all your supplier data organized in one place.
+      </p>
+    </header>
+    
+    <div class="stats-container">
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-building"></i></div>
+        <div class="stat-value" id="total-suppliers">0</div>
+        <div class="stat-label">Total Suppliers</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-star"></i></div>
+        <div class="stat-value" id="avg-rating">0.0</div>
+        <div class="stat-label">Average Rating</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-trophy"></i></div>
+        <div class="stat-value" id="top-rated">0</div>
+        <div class="stat-label">Top Rated Suppliers</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-map-marker-alt"></i></div>
+        <div class="stat-value" id="locations-count">0</div>
+        <div class="stat-label">Unique Locations</div>
+      </div>
+    </div>
+    
+    <div class="form-section">
+      <h2><i class="fas fa-plus-circle"></i>Add New Supplier</h2>
+      <form id="supplierForm">
+        <div class="form-row">
+          <input type="text" id="name" placeholder="Supplier Name" required />
+          <input type="number" id="location_id" placeholder="Location ID" />
+          <input type="number" step="0.01" min="0" max="5" id="rating" placeholder="Rating (0-5)" />
+        </div>
+        <div class="form-row">
+          <input type="email" id="email" placeholder="Email Address" />
+          <input type="text" id="phone_number" placeholder="Phone Number" />
+        </div>
+        <div class="form-row">
+          <textarea id="contact_info" placeholder="Contact Information (Address, Contact Person, etc.)"></textarea>
+        </div>
+        <div class="form-row">
+          <button type="button" onclick="insertSupplier()"><i class="fas fa-save"></i> Save Supplier</button>
+        </div>
+      </form>
+    </div>
+    
+    <div class="form-section">
+      <h2><i class="fas fa-edit"></i>Update/Delete Supplier</h2>
+      <div class="form-row">
+        <input type="number" id="supplier_id" placeholder="Supplier ID" />
+        <select id="update_field">
+          <option value="name">Name</option>
+          <option value="contact_info">Contact Info</option>
+          <option value="location_id">Location ID</option>
+          <option value="email">Email</option>
+          <option value="phone_number">Phone Number</option>
+          <option value="rating">Rating</option>
+        </select>
+        <input type="text" id="update_value" placeholder="New Value" />
+      </div>
+      <div class="form-row">
+        <button type="button" onclick="updateSupplier()"><i class="fas fa-sync"></i> Update Field</button>
+        <button type="button" class="delete" onclick="deleteSupplier()"><i class="fas fa-trash"></i> Delete</button>
+        <button type="button" class="view" onclick="fetchSuppliers()"><i class="fas fa-list"></i> View All</button>
+      </div>
+    </div>
+    
+    <div id="table-container">
+      <h2><i class="fas fa-list"></i>Suppliers List</h2>
+      <table id="supplierTable">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Contact Info</th>
+            <th>Location ID</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Rating</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td colspan="8" class="loading">Loading suppliers...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
+  <div id="notification"></div>
+  
+  <script>
+    // Show notification function
+    function showNotification(message, type) {
+      const notification = document.getElementById('notification');
+      notification.textContent = message;
+      notification.className = type === 'success' ? 'notification-success' : 'notification-error';
+      notification.style.opacity = 1;
+      
+      setTimeout(() => {
+        notification.style.opacity = 0;
+      }, 3000);
+    }
+    
+    // Insert supplier function
+    function insertSupplier() {
+      const data = {
+        name: document.getElementById("name").value,
+        contact_info: document.getElementById("contact_info").value,
+        location_id: document.getElementById("location_id").value,
+        email: document.getElementById("email").value,
+        phone_number: document.getElementById("phone_number").value,
+        rating: document.getElementById("rating").value
+      };
+      
+      // Basic validation
+      if (!data.name) {
+        showNotification("Supplier Name is required", "error");
+        return;
+      }
+
+      fetch('http://localhost:8000/suppliers.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ action: 'insert', data })
+      })
+      .then(res => res.json())
+      .then(response => {
+        showNotification(response.message, response.error ? "error" : "success");
+        fetchSuppliers();
+        document.getElementById("supplierForm").reset();
+      })
+      .catch(error => {
+        showNotification("Failed to connect to server", "error");
+        console.error("Error:", error);
+      });
+    }
+
+    // Update supplier function
+    function updateSupplier() {
+      const id = document.getElementById("supplier_id").value;
+      const field = document.getElementById("update_field").value;
+      const value = document.getElementById("update_value").value;
+      
+      if (!id || !field || !value) {
+        showNotification("Please enter ID, field, and value", "error");
+        return;
+      }
+
+      fetch('http://localhost:8000/suppliers.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ action: 'update_field', id, field, value })
+      })
+      .then(res => res.json())
+      .then(response => {
+        if (response.message) {
+          showNotification(response.message, "success");
+        } else if (response.error) {
+          showNotification("Error: " + response.error, "error");
+        } else {
+          showNotification("Unknown response from server", "error");
+        }
+        fetchSuppliers();
+      })
+      .catch(error => {
+        showNotification("Failed to connect to server", "error");
+        console.error("Error:", error);
+      });
+    }
+
+    // Delete supplier function
+    function deleteSupplier() {
+      const id = document.getElementById("supplier_id").value;
+      
+      if (!id) {
+        showNotification("Please enter a Supplier ID to delete", "error");
+        return;
+      }
+      
+      if (!confirm("Are you sure you want to delete this supplier?")) {
+        return;
+      }
+
+      fetch('http://localhost:8000/suppliers.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ action: 'delete', id })
+      })
+      .then(res => res.json())
+      .then(response => {
+        showNotification(response.message, response.error ? "error" : "success");
+        fetchSuppliers();
+      })
+      .catch(error => {
+        showNotification("Failed to connect to server", "error");
+        console.error("Error:", error);
+      });
+    }
+
+    // Fill form for editing
+    function fillUpdateForm(id) {
+      document.getElementById("supplier_id").value = id;
+      document.getElementById("update_field").focus();
+    }
+
+    // Fetch suppliers function
+    function fetchSuppliers() {
+      const tbody = document.querySelector('#supplierTable tbody');
+      tbody.innerHTML = '<tr><td colspan="8" class="loading">Loading suppliers...</td></tr>';
+      
+      fetch('http://localhost:8000/suppliers.php?action=select')
+        .then(res => res.json())
+        .then(data => {
+          tbody.innerHTML = '';
+          
+          if (data.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="8" class="loading">No suppliers found</td></tr>';
+            updateStats(0, 0, 0, 0);
+            return;
+          }
+          
+          let totalSuppliers = data.length;
+          let totalRating = 0;
+          let topRatedSuppliers = 0;
+          let locationsUsed = new Set();
+          
+          data.forEach(row => {
+            const rating = parseFloat(row.rating || 0);
+            
+            if (rating > 0) {
+              totalRating += rating;
+            }
+            
+            if (rating >= 4.5) {
+              topRatedSuppliers++;
+            }
+            
+            if (row.location_id) {
+              locationsUsed.add(row.location_id);
+            }
+            
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td>${row.supplier_id}</td>
+              <td>${row.name}</td>
+              <td>${row.contact_info || 'N/A'}</td>
+              <td>${row.location_id || 'N/A'}</td>
+              <td>${row.email || 'N/A'}</td>
+              <td>${row.phone_number || 'N/A'}</td>
+              <td class="${rating >= 4.5 ? 'top-rated' : ''}">${rating ? rating.toFixed(1) : 'N/A'}</td>
+              <td class="action-icons">
+                <i class="fas fa-edit action-icon edit" onclick="fillUpdateForm(${row.supplier_id})" title="Edit"></i>
+                <i class="fas fa-trash action-icon delete" onclick="if(confirm('Delete supplier #${row.supplier_id}?')) { document.getElementById('supplier_id').value=${row.supplier_id}; deleteSupplier(); }" title="Delete"></i>
+              </td>
+            `;
+            tbody.appendChild(tr);
+          });
+          
+          const avgRating = totalRating > 0 ? (totalRating / totalSuppliers).toFixed(1) : '0.0';
+          updateStats(totalSuppliers, avgRating, topRatedSuppliers, locationsUsed.size);
+        })
+        .catch(error => {
+          tbody.innerHTML = '<tr><td colspan="8" class="loading">Error connecting to server</td></tr>';
+          console.error("Error:", error);
+          updateStats(0, '0.0', 0, 0);
+        });
+    }
+    
+    // Update statistics function
+    function updateStats(suppliers, avgRating, topRated, locations) {
+      document.getElementById('total-suppliers').textContent = suppliers;
+      document.getElementById('avg-rating').textContent = avgRating;
+      document.getElementById('top-rated').textContent = topRated;
+      document.getElementById('locations-count').textContent = locations;
+    }
+    
+    // Initialize on page load
+    window.onload = function() {
+      fetchSuppliers();
+      
+      // Add keypress event listeners for better UX
+      document.getElementById('supplier_id').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          document.getElementById('update_field').focus();
+        }
+      });
+      
+      document.getElementById('update_value').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          updateSupplier();
+        }
+      });
+    };
+        // Close mobile menu when clicking outside
+    document.addEventListener('click', function(event) {
+      const navLinks = document.getElementById('navLinks');
+      const navToggle = document.getElementById('navToggle');
+      
+      if (navLinks.classList.contains('active') && 
+          !navLinks.contains(event.target) && 
+          event.target !== navToggle) {
+        navLinks.classList.remove('active');
+      }
+    });
+    
+    // Set active navigation link
+    document.addEventListener('DOMContentLoaded', function() {
+      const currentPage = window.location.pathname.split('/').pop();
+      const navLinks = document.querySelectorAll('.nav-links a');
+      
+      navLinks.forEach(link => {
+        const linkPage = link.getAttribute('href');
+        if (linkPage === currentPage) {
+          link.classList.add('active');
+        } else {
+          link.classList.remove('active');
+        }
+      });
+    });
+    
+    // Shrink navigation on scroll
+    window.addEventListener('scroll', function() {
+      const nav = document.querySelector('.main-nav');
+      if (window.scrollY > 50) {
+        nav.style.padding = '0';
+      } else {
+        nav.style.padding = '0';
+      }
+    });
+  </script>
+</body>
+</html>

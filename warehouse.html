@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Warehouse Dashboard</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Times New Roman', Times, serif;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+      background-size: 400% 400%;
+      animation: gradient 15s ease infinite;
+      color: #333;
+      min-height: 100vh;
+      padding: 20px;
+      overflow-x: hidden;
+      padding-top: 70px; 
+    }
+    
+    @keyframes gradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background-color: rgba(255, 255, 255, 0.9);
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      padding: 25px;
+    }
+    
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid #eee;
+    }
+    
+    h1 {
+      color: #2c3e50;
+      margin-bottom: 10px;
+      font-size: 36px;
+    }
+    
+    .description {
+      color: #7f8c8d;
+      font-size: 16px;
+      line-height: 1.6;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .stats-container {
+      display: flex;
+      justify-content: space-around;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+    
+    .stat-card {
+      background: #fff;
+      border-radius: 10px;
+      padding: 15px;
+      width: 23%;
+      min-width: 200px;
+      margin: 10px 0;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      text-align: center;
+      transition: transform 0.3s;
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-5px);
+    }
+    
+    .stat-icon {
+      font-size: 28px;
+      margin-bottom: 10px;
+      color: #3498db;
+    }
+    
+    .stat-value {
+      font-size: 24px;
+      font-weight: bold;
+      color: #2c3e50;
+    }
+    
+    .stat-label {
+      font-size: 14px;
+      color: #7f8c8d;
+    }
+    
+    .form-section {
+      background: #fff;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    h2 {
+      color: #2c3e50;
+      margin-bottom: 15px;
+      font-size: 24px;
+      display: flex;
+      align-items: center;
+    }
+    
+    h2 i {
+      margin-right: 10px;
+      color: #3498db;
+    }
+    
+    input, select, button {
+      padding: 10px 15px;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+      margin: 5px;
+      font-size: 14px;
+      transition: all 0.3s;
+    }
+    
+    input:focus, select:focus {
+      outline: none;
+      border-color: #3498db;
+      box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+    }
+    
+    button {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      cursor: pointer;
+      padding: 10px 20px;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+    
+    button:hover {
+      background-color: #2980b9;
+    }
+    
+    button.delete {
+      background-color: #e74c3c;
+    }
+    
+    button.delete:hover {
+      background-color: #c0392b;
+    }
+    
+    button.view {
+      background-color: #2ecc71;
+    }
+    
+    button.view:hover {
+      background-color: #27ae60;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      background: #fff;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    
+    th, td {
+      padding: 15px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    
+    th {
+      background-color: #3498db;
+      color: white;
+      font-weight: bold;
+    }
+    
+    tr:hover {
+      background-color: #f5f5f5;
+    }
+    
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+    
+    .action-icons {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .action-icon {
+      cursor: pointer;
+      color: #3498db;
+      transition: color 0.3s;
+    }
+    
+    .action-icon.edit:hover {
+      color: #2980b9;
+    }
+    
+    .action-icon.delete:hover {
+      color: #e74c3c;
+    }
+    
+    .form-row {
+      display: flex;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+      align-items: center;
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 20px;
+      font-size: 18px;
+      color: #7f8c8d;
+    }
+    
+    #notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 15px 25px;
+      border-radius: 5px;
+      color: white;
+      opacity: 0;
+      transition: opacity 0.5s;
+      z-index: 1000;
+    }
+    
+    .notification-success {
+      background-color: #2ecc71;
+    }
+    
+    .notification-error {
+      background-color: #e74c3c;
+    }
+    
+    @media (max-width: 768px) {
+      .form-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      input, select {
+        width: 100%;
+        margin: 5px 0;
+      }
+      
+      .stat-card {
+        width: 100%;
+      }
+    }
+    .main-nav {
+      background: linear-gradient(135deg, #2c3e50, #34495e);
+      width: 100%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
+      padding: 0;
+      transition: all 0.3s ease;
+    }
+    
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+    }
+    
+    .nav-logo {
+      display: flex;
+      align-items: center;
+    }
+    
+    .nav-logo a {
+      color: white;
+      font-size: 26px;
+      font-weight: 700;
+      text-decoration: none;
+      padding: 15px 0;
+      display: flex;
+      align-items: center;
+      letter-spacing: 0.5px;
+      transition: transform 0.3s ease;
+    }
+    
+    .nav-logo a:hover {
+      transform: scale(1.05);
+    }
+    
+    .nav-logo i {
+      margin-right: 10px;
+      font-size: 24px;
+      color: #3498db;
+    }
+    
+    .nav-links {
+      display: flex;
+      align-items: center;
+      height: 60px;
+    }
+    
+    .nav-links a {
+      color: #ecf0f1;
+      text-decoration: none;
+      padding: 0 15px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      position: relative;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    
+    .nav-links a:hover {
+      color: #3498db;
+      background-color: rgba(52, 152, 219, 0.1);
+    }
+    
+    .nav-links a.active {
+      color: white;
+      font-weight: 600;
+    }
+    
+    .nav-links a.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background-color: #3498db;
+      transition: transform 0.3s ease;
+    }
+    
+    .nav-links a i {
+      margin-right: 6px;
+      font-size: 16px;
+    }
+    
+    .nav-toggle {
+      display: none;
+      background: none;
+      border: none;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+    }
+    
+    /* Responsive styles */
+    @media (max-width: 992px) {
+      .nav-links a {
+        padding: 0 10px;
+        font-size: 14px;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      body {
+        padding-top: 60px;
+      }
+      
+      .nav-container {
+        padding: 0 15px;
+      }
+      
+      .nav-toggle {
+        display: block;
+      }
+      
+      .nav-links {
+        position: absolute;
+        top: 60px;
+        left: 0;
+        flex-direction: column;
+        background: linear-gradient(135deg, #2c3e50, #34495e);
+        width: 100%;
+        height: auto;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.5s ease;
+      }
+      
+      .nav-links.active {
+        max-height: 500px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+      
+      .nav-links a {
+        width: 100%;
+        padding: 15px 20px;
+        height: auto;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      
+      .nav-links a.active::after {
+        display: none;
+      }
+      
+      .nav-links a.active {
+        background-color: #3498db;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="main-nav">
+    <div class="nav-container">
+      <div class="nav-logo">
+        <a href="dashboard.html"><i class="fas fa-warehouse"></i>Ware2Go</a>
+      </div>
+      <button class="nav-toggle" id="navToggle">
+        <i class="fas fa-bars"></i>
+      </button>
+      <div class="nav-links" id="navLinks">
+        <a href="warehouse.html"><i class="fas fa-building"></i>Warehouse</a>
+        <a href="inventory.html"><i class="fas fa-clipboard-list"></i>Inventory</a>
+        <a href="location.html"><i class="fas fa-map-marker-alt"></i>Location</a>
+        <a href="products.html" class="active"><i class="fas fa-box"></i>Products</a>
+        <a href="orders.html"><i class="fas fa-shopping-cart"></i>Orders</a>
+        <a href="suppliers.html"><i class="fas fa-truck"></i>Suppliers</a>
+        <a href="transport.html"><i class="fas fa-shipping-fast"></i>Transport</a>
+        <a href="feedback.html"><i class="fas fa-comment-alt"></i>Feedback</a>
+      </div>
+    </div>
+  </nav>
+  <div class="container">
+    <header>
+      <h1>Warehouse Dashboard</h1>
+      <p class="description">
+        This Dashboard allows administrators to add new warehouses, update warehouse details, manage warehouse status, and track capacity across multiple locations. Real-time updates and tracking provide efficient warehouse operations management.
+      </p>
+    </header>
+    
+    <div class="stats-container">
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-warehouse"></i></div>
+        <div class="stat-value" id="total-warehouses">0</div>
+        <div class="stat-label">Total Warehouses</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+        <div class="stat-value" id="active-warehouses">0</div>
+        <div class="stat-label">Active Warehouses</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-times-circle"></i></div>
+        <div class="stat-value" id="inactive-warehouses">0</div>
+        <div class="stat-label">Inactive Warehouses</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-box"></i></div>
+        <div class="stat-value" id="total-capacity">0</div>
+        <div class="stat-label">Total Capacity</div>
+      </div>
+    </div>
+    
+    <div class="form-section">
+      <h2><i class="fas fa-plus-circle"></i>Add New Warehouse</h2>
+      <form id="warehouseForm">
+        <div class="form-row">
+          <input type="text" id="name" placeholder="Warehouse Name" required />
+          <input type="number" id="location_id" placeholder="Location ID" />
+          <input type="number" id="capacity" placeholder="Capacity" />
+        </div>
+        <div class="form-row">
+          <input type="number" id="manager_id" placeholder="Manager ID" />
+          <input type="text" id="phone_number" placeholder="Phone Number" />
+          <select id="status" required>
+            <option value="">--Status--</option>
+            <option value="Active">Active</option>
+            <option value="Inactive">Inactive</option>
+          </select>
+          <button type="button" onclick="insertWarehouse()"><i class="fas fa-save"></i> Save</button>
+        </div>
+      </form>
+    </div>
+    
+    <div class="form-section">
+      <h2><i class="fas fa-edit"></i>Update/Delete Warehouse</h2>
+      <div class="form-row">
+        <input type="number" id="warehouse_id" placeholder="Warehouse ID" />
+        <select id="update_field">
+          <option value="name">Name</option>
+          <option value="location_id">Location ID</option>
+          <option value="capacity">Capacity</option>
+          <option value="manager_id">Manager ID</option>
+          <option value="phone_number">Phone Number</option>
+          <option value="status">Status</option>
+        </select>
+        <input type="text" id="update_value" placeholder="New Value" />
+      </div>
+      <div class="form-row">
+        <button type="button" onclick="updateWarehouse()"><i class="fas fa-sync"></i> Update Field</button>
+        <button type="button" class="delete" onclick="deleteWarehouse()"><i class="fas fa-trash"></i> Delete</button>
+        <button type="button" class="view" onclick="fetchWarehouses()"><i class="fas fa-list"></i> View All</button>
+      </div>
+    </div>
+    
+    <div id="table-container">
+      <h2><i class="fas fa-list"></i>Warehouse List</h2>
+      <table id="warehouseTable">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Location ID</th>
+            <th>Capacity</th>
+            <th>Manager ID</th>
+            <th>Phone</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td colspan="8" class="loading">Loading warehouses...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
+  <div id="notification"></div>
+  
+  <script>
+    // Show notification function
+    function showNotification(message, type) {
+      const notification = document.getElementById('notification');
+      notification.textContent = message;
+      notification.className = type === 'success' ? 'notification-success' : 'notification-error';
+      notification.style.opacity = 1;
+      
+      setTimeout(() => {
+        notification.style.opacity = 0;
+      }, 3000);
+    }
+    
+    // Insert warehouse function
+    function insertWarehouse() {
+      const data = {
+        name: document.getElementById("name").value,
+        location_id: document.getElementById("location_id").value,
+        capacity: document.getElementById("capacity").value,
+        manager_id: document.getElementById("manager_id").value,
+        phone_number: document.getElementById("phone_number").value,
+        status: document.getElementById("status").value
+      };
+      
+      // Basic validation
+      if (!data.name) {
+        showNotification("Warehouse name is required", "error");
+        return;
+      }
+
+      fetch('http://localhost:8000/warehouse.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ action: 'insert', data })
+      })
+      .then(res => res.json())
+      .then(response => {
+        showNotification(response.message, response.error ? "error" : "success");
+        fetchWarehouses();
+        document.getElementById("warehouseForm").reset();
+      })
+      .catch(error => {
+        showNotification("Failed to connect to server", "error");
+        console.error("Error:", error);
+      });
+    }
+
+    // Update warehouse function
+    function updateWarehouse() {
+      const id = document.getElementById("warehouse_id").value;
+      const field = document.getElementById("update_field").value;
+      const value = document.getElementById("update_value").value;
+      
+      if (!id || !field || !value) {
+        showNotification("Please enter ID, field, and value", "error");
+        return;
+      }
+
+      fetch('http://localhost:8000/warehouse.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ action: 'update_field', id, field, value })
+      })
+      .then(res => res.json())
+      .then(response => {
+        if (response.message) {
+          showNotification(response.message, "success");
+        } else if (response.error) {
+          showNotification("Error: " + response.error, "error");
+        } else {
+          showNotification("Unknown response from server", "error");
+        }
+        fetchWarehouses();
+      })
+      .catch(error => {
+        showNotification("Failed to connect to server", "error");
+        console.error("Error:", error);
+      });
+    }
+
+    // Delete warehouse function
+    function deleteWarehouse() {
+      const id = document.getElementById("warehouse_id").value;
+      
+      if (!id) {
+        showNotification("Please enter a Warehouse ID to delete", "error");
+        return;
+      }
+      
+      if (!confirm("Are you sure you want to delete this warehouse?")) {
+        return;
+      }
+
+      fetch('http://localhost:8000/warehouse.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ action: 'delete', id })
+      })
+      .then(res => res.json())
+      .then(response => {
+        showNotification(response.message, response.error ? "error" : "success");
+        fetchWarehouses();
+      })
+      .catch(error => {
+        showNotification("Failed to connect to server", "error");
+        console.error("Error:", error);
+      });
+    }
+
+    // Fill form for editing
+    function fillUpdateForm(id) {
+      document.getElementById("warehouse_id").value = id;
+      document.getElementById("update_field").focus();
+    }
+
+    // Fetch warehouses function
+    function fetchWarehouses() {
+      const tbody = document.querySelector('#warehouseTable tbody');
+      tbody.innerHTML = '<tr><td colspan="8" class="loading">Loading warehouses...</td></tr>';
+      
+      fetch('http://localhost:8000/warehouse.php?action=select')
+        .then(res => res.json())
+        .then(data => {
+          tbody.innerHTML = '';
+          
+          if (data.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="8" class="loading">No warehouses found</td></tr>';
+            updateStats(0, 0, 0, 0);
+            return;
+          }
+          
+          let totalWarehouses = data.length;
+          let activeWarehouses = 0;
+          let inactiveWarehouses = 0;
+          let totalCapacity = 0;
+          
+          data.forEach(row => {
+            if (row.status === 'Active') activeWarehouses++;
+            else inactiveWarehouses++;
+            
+            totalCapacity += parseInt(row.capacity || 0);
+            
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td>${row.warehouse_id}</td>
+              <td>${row.name}</td>
+              <td>${row.location_id || 'N/A'}</td>
+              <td>${row.capacity || 'N/A'}</td>
+              <td>${row.manager_id || 'N/A'}</td>
+              <td>${row.phone_number || 'N/A'}</td>
+              <td><span class="${row.status === 'Active' ? 'active' : 'inactive'}">${row.status}</span></td>
+              <td class="action-icons">
+                <i class="fas fa-edit action-icon edit" onclick="fillUpdateForm(${row.warehouse_id})" title="Edit"></i>
+                <i class="fas fa-trash action-icon delete" onclick="if(confirm('Delete warehouse #${row.warehouse_id}?')) { document.getElementById('warehouse_id').value=${row.warehouse_id}; deleteWarehouse(); }" title="Delete"></i>
+              </td>
+            `;
+            tbody.appendChild(tr);
+          });
+          
+          updateStats(totalWarehouses, activeWarehouses, inactiveWarehouses, totalCapacity);
+        })
+        .catch(error => {
+          tbody.innerHTML = '<tr><td colspan="8" class="loading">Error connecting to server</td></tr>';
+          console.error("Error:", error);
+          updateStats(0, 0, 0, 0);
+        });
+    }
+    
+    // Update statistics function
+    function updateStats(total, active, inactive, capacity) {
+      document.getElementById('total-warehouses').textContent = total;
+      document.getElementById('active-warehouses').textContent = active;
+      document.getElementById('inactive-warehouses').textContent = inactive;
+      document.getElementById('total-capacity').textContent = capacity.toLocaleString();
+    }
+    
+    // Initialize on page load
+    window.onload = function() {
+      fetchWarehouses();
+      
+      // Add keypress event listeners for better UX
+      document.getElementById('warehouse_id').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          document.getElementById('update_field').focus();
+        }
+      });
+      
+      document.getElementById('update_value').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          updateWarehouse();
+        }
+      });
+    };
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(event) {
+      const navLinks = document.getElementById('navLinks');
+      const navToggle = document.getElementById('navToggle');
+      
+      if (navLinks.classList.contains('active') && 
+          !navLinks.contains(event.target) && 
+          event.target !== navToggle) {
+        navLinks.classList.remove('active');
+      }
+    });
+    
+    // Set active navigation link
+    document.addEventListener('DOMContentLoaded', function() {
+      const currentPage = window.location.pathname.split('/').pop();
+      const navLinks = document.querySelectorAll('.nav-links a');
+      
+      navLinks.forEach(link => {
+        const linkPage = link.getAttribute('href');
+        if (linkPage === currentPage) {
+          link.classList.add('active');
+        } else {
+          link.classList.remove('active');
+        }
+      });
+    });
+    
+    // Shrink navigation on scroll
+    window.addEventListener('scroll', function() {
+      const nav = document.querySelector('.main-nav');
+      if (window.scrollY > 50) {
+        nav.style.padding = '0';
+      } else {
+        nav.style.padding = '0';
+      }
+    });
+  </script>
+</body>
+</html>
