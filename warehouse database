@@ -1,0 +1,190 @@
+
+CREATE TABLE Users (
+    user_id INT PRIMARY KEY AUTOINCREMENT,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    role ENUM('Admin', 'Manager', 'Customer', 'Supplier') NOT NULL,
+    contact_info VARCHAR(500),
+    date_joined TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE Locations (
+    location_id INT PRIMARY KEY AUTOINCREMENT,
+    address TEXT NOT NULL,
+    city VARCHAR(100) NOT NULL,
+    state VARCHAR(100) NOT NULL,
+    zip_code VARCHAR(20) NOT NULL,
+    country VARCHAR(100) NOT NULL,
+    phone_number VARCHAR(20)
+);
+
+CREATE TABLE Warehouse (
+    warehouse_id INT PRIMARY KEY AUTOINCREMENT,
+    name VARCHAR(255) NOT NULL,
+    location_id INT,
+    capacity INT,
+    manager_id INT,
+    phone_number VARCHAR(20),
+    status ENUM('Active', 'Inactive') NOT NULL,
+    FOREIGN KEY (location_id) REFERENCES Locations(location_id),
+    FOREIGN KEY (manager_id) REFERENCES Users(user_id)
+);
+
+CREATE TABLE Employees (
+    employee_id INT PRIMARY KEY AUTOINCREMENT,
+    name VARCHAR(255) NOT NULL,
+    role VARCHAR(100) NOT NULL,
+    contact_info TEXT,
+    warehouse_id INT,
+    hire_date DATE,
+    status ENUM('Active', 'Inactive') NOT NULL,
+    FOREIGN KEY (warehouse_id) REFERENCES Warehouse(warehouse_id)
+);
+
+CREATE TABLE Suppliers (
+    supplier_id INT PRIMARY KEY AUTOINCREMENT,
+    name VARCHAR(255) NOT NULL,
+    contact_info TEXT,
+    location_id INT,
+    email VARCHAR(255),
+    phone_number VARCHAR(20),
+    rating DECIMAL(3,2),
+    FOREIGN KEY (location_id) REFERENCES Locations(location_id)
+);
+
+CREATE TABLE Products (
+    product_id INT PRIMARY KEY AUTOINCREMENT,
+    name VARCHAR(255) NOT NULL,
+    category VARCHAR(255),
+    price_per_unit DECIMAL(10,2) NOT NULL,
+    supplier_id INT,
+    quantity_in_stock INT NOT NULL,
+    description TEXT,
+    FOREIGN KEY (supplier_id) REFERENCES Suppliers(supplier_id)
+);
+
+CREATE TABLE Inventory (
+    inventory_id INT PRIMARY KEY AUTOINCREMENT,
+    product_id INT,
+    warehouse_id INT,
+    stock_quantity INT NOT NULL,
+    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    reorder_level INT,
+    shelf_location VARCHAR(255),
+    FOREIGN KEY (product_id) REFERENCES Products(product_id),
+    FOREIGN KEY (warehouse_id) REFERENCES Warehouse(warehouse_id)
+);
+
+CREATE TABLE Customers (
+    customer_id INT PRIMARY KEY AUTOINCREMENT,
+    name VARCHAR(255) NOT NULL,
+    contact_info TEXT,
+    location_id INT,
+    phone_number VARCHAR(20),
+    preferred_shipping_method VARCHAR(255),
+    FOREIGN KEY (location_id) REFERENCES Locations(location_id)
+);
+
+CREATE TABLE Orders (
+    order_id INT PRIMARY KEY AUTOINCREMENT,
+    customer_id INT,
+    order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    status ENUM('Pending', 'Shipped', 'Delivered') NOT NULL,
+    total_amount DECIMAL(10,2) NOT NULL,
+    shipping_address TEXT,
+    payment_status VARCHAR(50),
+    FOREIGN KEY (customer_id) REFERENCES Customers(customer_id)
+);
+
+CREATE TABLE OrderDetails (
+    order_detail_id INT PRIMARY KEY AUTOINCREMENT,
+    order_id INT,
+    product_id INT,
+    quantity INT NOT NULL,
+    unit_price DECIMAL(10,2) NOT NULL,
+    discount DECIMAL(5,2),
+    FOREIGN KEY (order_id) REFERENCES Orders(order_id),
+    FOREIGN KEY (product_id) REFERENCES Products(product_id)
+);
+
+CREATE TABLE Transport (
+    transport_id INT PRIMARY KEY AUTOINCREMENT,
+    vehicle_number VARCHAR(50) NOT NULL,
+    driver_name VARCHAR(255) NOT NULL,
+    contact_info TEXT,
+    vehicle_type VARCHAR(50),
+    capacity INT,
+    status ENUM('Active', 'Inactive') NOT NULL
+);
+
+CREATE TABLE Shipments (
+    shipment_id INT PRIMARY KEY AUTOINCREMENT,
+    order_id INT,
+    shipment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    status ENUM('Out for Delivery', 'Delivered') NOT NULL,
+    transport_id INT,
+    delivery_address TEXT,
+    estimated_delivery_date DATE,
+    FOREIGN KEY (order_id) REFERENCES Orders(order_id),
+    FOREIGN KEY (transport_id) REFERENCES Transport(transport_id)
+);
+
+
+
+CREATE TABLE Payments (
+    payment_id INT PRIMARY KEY AUTOINCREMENT,
+    order_id INT,
+    amount DECIMAL(10,2) NOT NULL,
+    payment_method ENUM('Credit Card', 'Bank Transfer', 'Cash') NOT NULL,
+    payment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    status ENUM('Pending', 'Completed', 'Failed') NOT NULL,
+    transaction_id VARCHAR(100),
+    FOREIGN KEY (order_id) REFERENCES Orders(order_id)
+);
+
+CREATE TABLE Returns (
+    return_id INT PRIMARY KEY AUTOINCREMENT,
+    order_id INT,
+    product_id INT,
+    return_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    status ENUM('Approved', 'Rejected', 'Pending') NOT NULL,
+    refund_amount DECIMAL(10,2),
+    FOREIGN KEY (order_id) REFERENCES Orders(order_id),
+    FOREIGN KEY (product_id) REFERENCES Products(product_id)
+);
+
+CREATE TABLE Reviews (
+    review_id INT PRIMARY KEY AUTOINCREMENT,
+    customer_id INT,
+    product_id INT,
+    rating INT CHECK (rating BETWEEN 1 AND 5),
+    comments TEXT,
+    review_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    helpfulness_count INT DEFAULT 0,
+    FOREIGN KEY (customer_id) REFERENCES Customers(customer_id),
+    FOREIGN KEY (product_id) REFERENCES Products(product_id)
+);
+
+CREATE TABLE Reports (
+    report_id INT PRIMARY KEY AUTOINCREMENT,
+    warehouse_id INT,
+    generated_by INT,
+    report_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    report_type ENUM('Stock Report', 'Sales Report') NOT NULL,
+    data_summary TEXT,
+    FOREIGN KEY (warehouse_id) REFERENCES Warehouse(warehouse_id),
+    FOREIGN KEY (generated_by) REFERENCES Users(user_id)
+);
+
+CREATE TABLE Feedback (
+    feedback_id INT PRIMARY KEY AUTOINCREMENT,
+    user_id INT,
+    warehouse_id INT NULL,
+    order_id INT NULL,
+    comments TEXT,
+    rating INT CHECK (rating BETWEEN 1 AND 5),
+    FOREIGN KEY (user_id) REFERENCES Users(user_id),
+    FOREIGN KEY (warehouse_id) REFERENCES Warehouse(warehouse_id),
+    FOREIGN KEY (order_id) REFERENCES Orders(order_id)
+);
